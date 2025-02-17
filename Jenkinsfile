@@ -42,7 +42,7 @@ pipeline {
                     docker run -d --network=my_network --name movie-db -e POSTGRES_USER=movie_db_username -e POSTGRES_PASSWORD=movie_db_password -e POSTGRES_DB=movie_db_dev postgres:15 || echo "⚠️ Conteneur déjà existant."
                     docker run -d --network=my_network --name cast-db -e POSTGRES_USER=cast_db_username -e POSTGRES_PASSWORD=cast_db_password -e POSTGRES_DB=cast_db_dev postgres:15 || echo "⚠️ Conteneur déjà existant."
                     
-                    docker run -d --network=my_network -p 80:80 --name nginx nginx:latest
+                    docker run -d --network=my_network -p 80:80 --name nginx nginx:latest || echo "⚠️ Conteneur déjà existant."
                     
                     sleep 5
                     docker ps
