@@ -46,6 +46,7 @@ pipeline {
                     
                     sleep 5
                     docker ps
+                    curl localhost
                     '''
                 }
             }
