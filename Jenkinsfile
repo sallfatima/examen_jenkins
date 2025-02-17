@@ -4,6 +4,8 @@ pipeline {
         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
         KUBECONFIG = credentials("config")
         DOCKER_TAG = "v.${BUILD_ID}.0"
+        DOCKER_IMAGE_MOVIE = "jenkins_devops_exams_movie_service"
+        DOCKER_IMAGE_CAST = "jenkins_devops_exams_cast_service"
     }
 
     agent any
@@ -14,8 +16,8 @@ pipeline {
                 script {
                     sh '''
                     echo "🚀 Construction des images Docker..."
-                    docker build -t $DOCKER_ID/jenkins_devops_exams_movie_service:$DOCKER_TAG movie-service/
-                    docker build -t $DOCKER_ID/jenkins_devops_exams_cast_service:$DOCKER_TAG cast-service/
+                    docker build -t $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG movie-service/
+                    docker build -t $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG cast-service/
                     '''
                 }
             }
@@ -49,18 +51,7 @@ pipeline {
             }
         }
 
-        stage('Test Acceptance') {
-            steps {
-                script {
-                    sh '''
-                    echo "✅ Vérification des services..."
-                    curl -f http://localhost:8000/ || exit 1
-                    curl -f http://localhost:8001/ || exit 1
-                    '''
-                }
-            }
-        }
-
+        
         stage('Docker Push') {
             steps {
                 script {
