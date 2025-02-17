@@ -36,8 +36,8 @@ pipeline {
 
                     echo "🚀 Démarrage des conteneurs..."
                     
-                    docker run -d --network=my_network -p 8000:8000 --name movie-service $DOCKER_ID/jenkins_devops_exams_movie_service:$DOCKER_TAG
-                    docker run -d --network=my_network -p 8001:8001 --name cast-service $DOCKER_ID/jenkins_devops_exams_cast_service:$DOCKER_TAG
+                    docker run -d --network=my_network -p 8001:8000 --name movie-service $DOCKER_ID/jenkins_devops_exams_movie_service:$DOCKER_TAG
+                    docker run -d --network=my_network -p 8002:8000 --name cast-service $DOCKER_ID/jenkins_devops_exams_cast_service:$DOCKER_TAG
                     
                     docker run -d --network=my_network --name movie-db -e POSTGRES_USER=movie_db_username -e POSTGRES_PASSWORD=movie_db_password -e POSTGRES_DB=movie_db_dev postgres:15 || echo "⚠️ Conteneur déjà existant."
                     docker run -d --network=my_network --name cast-db -e POSTGRES_USER=cast_db_username -e POSTGRES_PASSWORD=cast_db_password -e POSTGRES_DB=cast_db_dev postgres:15 || echo "⚠️ Conteneur déjà existant."
@@ -47,6 +47,25 @@ pipeline {
                     sleep 5
                     docker ps
                     '''
+                }
+            }
+        }
+
+        stage('Test Acceptance') {
+            steps {
+                script {
+                    echo "🧪 Exécution du test d'acceptation : vérification de la réponse du service"
+
+                    // Attendre un peu pour s'assurer que les services sont bien démarrés
+                    sleep 10
+
+                    // Tester le service movie_service sur le port 8001
+                    echo "Vérification du service movie_service..."
+                    curl -f localhost:8001 || exit 1
+
+                    // Tester le service cast_service sur le port 8002
+                    echo "Vérification du service cast_service..."
+                    curl -f localhost:8002 || exit 1
                 }
             }
         }
