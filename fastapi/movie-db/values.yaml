@@ -1,0 +1,19 @@
+image:
+    repository: postgres
+    tag: 13.3
+
+service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+env:
+    POSTGRES_DB: movie_db_username
+    POSTGRES_USER: movie_db_password
+    POSTGRES_PASSWORD: movie_db_dev
+
+volume:
+    
+    size: 1Gi
+    storageClass: standard
+

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cast-db
+  labels:
+    app: cast-db
+spec:
+  serviceName: cast-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cast-db
+  template:
+    metadata:
+      labels:
+        app: cast-db
+    spec:
+      containers:
+      - name: cast-db
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: "{{ .Values.env.POSTGRES_DB }}"
+        - name: POSTGRES_USER
+          value: "{{ .Values.env.POSTGRES_USER }}"  # ✅ Correction
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.env.POSTGRES_PASSWORD }}"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: {{ .Values.volume.accessMode }} 
+      storageClassName: "{{ .Values.volume.storageClass }}" 
+      resources:
+        requests:
+          storage: "{{ .Values.volume.size }}"

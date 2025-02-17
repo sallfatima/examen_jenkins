@@ -1,0 +1,19 @@
+image:
+  repository: postgres
+  tag: 13.3
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5432
+  targetPort: 5432
+
+env:
+  POSTGRES_USER: cast_db_username
+  POSTGRES_PASSWORD: cast_db_password
+  POSTGRES_DB: cast_db_dev
+
+volume:
+  storageClass: standard
+  accessMode: ["ReadWriteOnce"]  # ✅ Correct format
+  size: 1Gi

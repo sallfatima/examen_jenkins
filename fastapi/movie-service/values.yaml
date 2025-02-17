@@ -1,0 +1,12 @@
+image:
+  repository: movie-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+env: 
+  DATABASE_URI: "postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev"
+  CAST_SERVICE_HOST_URL: "http://cast-service:8000/api/v1/casts/"
