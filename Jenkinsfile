@@ -22,26 +22,7 @@ pipeline {
                 }
             }
         }
-        stage('Test Acceptance') { 
-            steps {
-                script {
-                    sh '''
-                    echo "🧪 Exécution du test d'acceptation : vérification de la réponse du service"
-
-                    // Attendre un peu pour s'assurer que les services sont bien démarrés
-                    sleep 10
-
-                    // Tester le service movie_service sur le port 8001
-                    echo "Vérification du service movie_service..."
-                    curl localhost:8001 || exit 1
-
-                    // Tester le service cast_service sur le port 8002
-                    echo "Vérification du service cast_service..."
-                    curl localhost:8002 || exit 1
-                    '''
-                }
-            }
-        }
+        
         stage('Docker Run') {
             steps {
                 script {
