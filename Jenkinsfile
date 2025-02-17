@@ -22,7 +22,7 @@ pipeline {
                 }
             }
         }
-       
+
         stage('Docker Run') {
             steps {
                 script {
@@ -51,7 +51,7 @@ pipeline {
             }
         }
 
-        
+       
         
         stage('Docker Push') {
             steps {
