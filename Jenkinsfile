@@ -36,8 +36,8 @@ pipeline {
 
                     echo "🚀 Démarrage des conteneurs..."
                     
-                    docker run -d --network=my_network -p 8001:8000 --name movie-service $DOCKER_ID/jenkins_devops_exams_movie_service:$DOCKER_TAG
-                    docker run -d --network=my_network -p 8002:8001 --name cast-service $DOCKER_ID/jenkins_devops_exams_cast_service:$DOCKER_TAG
+                    docker run -d --network=my_network -p 8004:8000 --name movie-service $DOCKER_ID/jenkins_devops_exams_movie_service:$DOCKER_TAG
+                    docker run -d --network=my_network -p 8005:8000 --name cast-service $DOCKER_ID/jenkins_devops_exams_cast_service:$DOCKER_TAG
                     
                     docker run -d --network=my_network --name movie-db -e POSTGRES_USER=movie_db_username -e POSTGRES_PASSWORD=movie_db_password -e POSTGRES_DB=movie_db_dev postgres:15 || echo "⚠️ Conteneur déjà existant."
                     docker run -d --network=my_network --name cast-db -e POSTGRES_USER=cast_db_username -e POSTGRES_PASSWORD=cast_db_password -e POSTGRES_DB=cast_db_dev postgres:15 || echo "⚠️ Conteneur déjà existant."
