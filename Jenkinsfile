@@ -101,7 +101,37 @@ pipeline {
                 }
             }
         }
-        
+         stage('Déploiement en QA') {
+            steps {
+                script {
+                    sh '''
+                    echo "🚀 Déploiement sur Kubernetes (namespace: staging)..."
+
+                    cp fastapi/movie-service/values.yaml values-movie.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-movie.yml
+
+                    cp fastapi/cast-service/values.yaml values-cast.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast.yml
+                    
+                    cp fastapi/movie-db/values.yaml values-movie-db.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-movie-db.yml
+
+                    cp fastapi/cast-db/values.yaml values-cast-db.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast-db.yml
+
+                    cp fastapi/nginx/values.yaml values-nginx.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-nginx.yml
+
+                    helm upgrade --install movie-service fastapi/movie-service --values=values-movie.yml --namespace qa
+                    helm upgrade --install cast-service fastapi/cast-service --values=values-cast.yml --namespace qa
+                    helm upgrade --install movie-db fastapi/movie-db --values=values-movie-db.yml --namespace qa
+                    helm upgrade --install cast-db fastapi/cast-db --values=values-cast-db.yml --namespace qa
+                    helm upgrade --install nginx fastapi/nginx --values=values-nginx.yml --namespace qa
+
+                    '''
+                }
+            }
+        }
         stage('Déploiement en Staging') {
             steps {
                 script {
@@ -113,9 +143,22 @@ pipeline {
 
                     cp fastapi/cast-service/values.yaml values-cast.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast.yml
+                    
+                    cp fastapi/movie-db/values.yaml values-movie-db.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-movie-db.yml
+
+                    cp fastapi/cast-db/values.yaml values-cast-db.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast-db.yml
+
+                    cp fastapi/nginx/values.yaml values-nginx.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-nginx.yml
 
                     helm upgrade --install movie-service fastapi/movie-service --values=values-movie.yml --namespace staging
                     helm upgrade --install cast-service fastapi/cast-service --values=values-cast.yml --namespace staging
+                    helm upgrade --install movie-db fastapi/movie-db --values=values-movie-db.yml --namespace staging
+                    helm upgrade --install cast-db fastapi/cast-db --values=values-cast-db.yml --namespace staging
+                    helm upgrade --install nginx fastapi/nginx --values=values-nginx.yml --namespace staging
+
                     '''
                 }
             }
@@ -130,14 +173,27 @@ pipeline {
                     sh '''
                     echo "🚀 Déploiement sur Kubernetes (namespace: prod)..."
 
-                    cp fastapi/movie-service/values.yaml values-movie.yml
+                     cp fastapi/movie-service/values.yaml values-movie.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-movie.yml
 
                     cp fastapi/cast-service/values.yaml values-cast.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast.yml
+                    
+                    cp fastapi/movie-db/values.yaml values-movie-db.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-movie-db.yml
+
+                    cp fastapi/cast-db/values.yaml values-cast-db.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast-db.yml
+
+                    cp fastapi/nginx/values.yaml values-nginx.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-nginx.yml
 
                     helm upgrade --install movie-service fastapi/movie-service --values=values-movie.yml --namespace prod
                     helm upgrade --install cast-service fastapi/cast-service --values=values-cast.yml --namespace prod
+                    helm upgrade --install movie-db fastapi/movie-db --values=values-movie-db.yml --namespace prod
+                    helm upgrade --install cast-db fastapi/cast-db --values=values-cast-db.yml --namespace prod
+                    helm upgrade --install nginx fastapi/nginx --values=values-nginx.yml --namespace prod
+
                     '''
                 }
             }
