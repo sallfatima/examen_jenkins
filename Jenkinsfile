@@ -101,25 +101,7 @@ pipeline {
                 }
             }
         }
-        stage('Déploiement en QA') {
-            steps {
-                script {
-                    sh '''
-                    echo "🚀 Déploiement sur Kubernetes (namespace: staging)..."
-
-                    cp fastapi/movie-service/values.yaml values-movie.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-movie.yml
-
-                    cp fastapi/cast-service/values.yaml values-cast.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-cast.yml
-
-                    helm upgrade --install movie-service fastapi/movie-service --values=values-movie.yml --namespace QA
-                    helm upgrade --install cast-service fastapi/cast-service --values=values-cast.yml --namespace QA
-                    '''
-                }
-            }
-        }
-
+        
         stage('Déploiement en Staging') {
             steps {
                 script {
