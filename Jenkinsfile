@@ -28,10 +28,10 @@ pipeline {
                 script {
                     sh '''
                     echo "🛑 Arrêt des anciens services Docker Compose..."
-                    docker-compose down || true
+                    sudo docker-compose down || true
 
                     echo "🚀 Lancement des services avec Docker Compose..."
-                    docker-compose up -d
+                    sudo docker-compose up -d
 
                     echo "⌛ Attente du démarrage..."
                     sleep 10
