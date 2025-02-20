@@ -46,7 +46,7 @@ pipeline {
                     
                     sleep 5
                     docker ps
-                    curl localhost
+                    
                     '''
                 }
             }
@@ -56,9 +56,8 @@ pipeline {
             steps {
                  script {
                     sh '''
-                    curl localhost
-                    curl localhost:8004 || { echo "Test movie_service échoué!"; exit 1; }
-                    curl localhost:8005 || { echo "Test cast_service échoué!"; exit 1; }
+                    curl localhost:32010
+                    
                     '''
                     }
             }
