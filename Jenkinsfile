@@ -28,8 +28,14 @@ pipeline {
                 script {
                     sh '''
                     echo "🛑 Arrêt des conteneurs existants..."
+                    docker stop $(docker ps -aq)
+                    docker rm $(docker ps -aq )
+                   
+
                     docker stop movie-service cast-service movie-db cast-db nginx || true
                     docker rm movie-service cast-service movie-db cast-db nginx || true
+
+                    docker ps -a
                     
                     echo "🔗 Création du réseau Docker..."
                     docker network create my_network || true
