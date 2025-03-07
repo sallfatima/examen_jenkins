@@ -59,7 +59,7 @@ pipeline {
             steps {
                  script {
                     sh '''
-                    curl localhost
+                    curl localhost:32010
                     
                     '''
                     }
