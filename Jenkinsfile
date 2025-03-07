@@ -31,10 +31,6 @@ pipeline {
                     docker stop $(docker ps -aq)
                     docker rm $(docker ps -aq )
                    
-
-                    docker stop movie-service cast-service movie-db cast-db nginx || true
-                    docker rm movie-service cast-service movie-db cast-db nginx || true
-
                     docker ps -a
                     
                     echo "🔗 Création du réseau Docker..."
@@ -65,7 +61,7 @@ pipeline {
                     curl localhost
                     
                     '''
-                    }
+                    
             }
         }
         
