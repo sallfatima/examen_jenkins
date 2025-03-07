@@ -10,7 +10,32 @@ pipeline {
 
     agent any
 
+
+ 
+
     stages {
+        stage('Cleanup Previous Containers') {
+            steps {
+                script {
+                    echo "🛑 Arrêt et suppression des anciens conteneurs..."
+                    sh '''
+                    docker stop movie-service cast-service movie-db cast-db nginx 2>/dev/null || true
+                    docker rm movie-service cast-service movie-db cast-db nginx 2>/dev/null || true
+                    '''
+                }
+            }
+        }
+
+        stage('Setup Docker Network') {
+            steps {
+                script {
+                    echo "🔗 Vérification du réseau Docker..."
+                    sh '''
+                    docker network ls | grep ${NETWORK_NAME} || docker network create ${NETWORK_NAME}
+                    '''
+                }
+            }
+        }
         stage('Docker Build') {
             steps {
                 script {
@@ -30,12 +55,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo "🛑 Arrêt et suppression des conteneurs existants..."
-                    docker stop $(docker ps -aq) 2>/dev/null || true
-                    docker rm $(docker ps -aq) 2>/dev/null || true
-                    
-                    echo "🔗 Création du réseau Docker..."
-                    docker network create my_network || true
+              
 
                     echo "🚀 Démarrage des services..."
 
