@@ -59,7 +59,9 @@ pipeline {
             steps {
                  script {
                     sh '''
-                    curl localhost:32010
+                    
+                    curl http://host.docker.internal:32010
+
                     
                     '''
                     }
