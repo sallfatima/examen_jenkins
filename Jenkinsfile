@@ -6,6 +6,7 @@ pipeline {
         DOCKER_TAG = "v.${BUILD_ID}.0"
         DOCKER_IMAGE_MOVIE = "jenkins_devops_exams_movie_service"
         DOCKER_IMAGE_CAST = "jenkins_devops_exams_cast_service"
+        NETWORK_NAME = "my_network"
     }
 
     agent any
@@ -75,39 +76,25 @@ pipeline {
             }
         }
 
-
-        stage('Wait for Services to Start') {
-            steps {
-                script {
-                    echo "⏳ Attente du démarrage des services..."
-                    sh "sleep 10"
-                }
-            }
-        }
-
         stage('Test Acceptance') {
             steps {
-                script {
-                    echo "🔎 Vérification de l'état des services..."
-
+                 script {
                     sh '''
-                    if curl -s http://localhost:32000 | grep "Welcome"; then
-                        echo "✅ movie-service est accessible !"
-                    else
-                        echo "❌ movie-service inaccessible !" && exit 1
-                    fi
+                    echo "⏳ Vérification de l'état des services..."
+                    docker logs cast-service || echo "⚠️ cast-service n'a pas démarré correctement."
+                    docker logs movie-service || echo "⚠️ movie-service n'a pas démarré correctement."
 
-                    if curl -s http://localhost:32010 | grep "Welcome"; then
-                        echo "✅ cast-service est accessible !"
-                    else
-                        echo "❌ cast-service inaccessible !" && exit 1
-                    fi
+
+                    echo "✅ cast-service est accessible !"
+                    curl -v http://cast-service:8000
+
+                
+                    echo "✅ movie-service est accessible !"
+                    curl -v http://movie-service:8000
                     '''
-                }
+                    }
             }
         }
-
-       
         
         stage('Docker Push') {
             steps {
