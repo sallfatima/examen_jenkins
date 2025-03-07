@@ -81,6 +81,10 @@ pipeline {
                     echo "📂 Vérification des conteneurs en cours d'exécution..."
                     docker ps -a
 
+                    docker exec -it movie-service netstat -tulnp
+                    docker exec -it cast-service netstat -tulnp
+
+
                     '''
                 }
             }
