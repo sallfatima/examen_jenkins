@@ -20,8 +20,10 @@ pipeline {
                 script {
                    echo "🛑 Arrêt et suppression des anciens conteneurs..."
                     sh '''
-                    docker stop $(docker ps -aq) || true
-                    docker rm $(docker ps -aq) || true
+                    
+                        docker ps -aq | xargs -r docker stop || true
+                        docker ps -aq | xargs -r docker rm || true
+                   
                     '''
                 }
             }
@@ -56,21 +58,11 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo "🛑 Arrêt et suppression des conteneurs existants..."
-                    docker stop $(docker ps -aq) || true
-                    docker rm $(docker ps -aq) || true
-                    docker ps -a
-                    echo "🚀 Démarrage des services..."
-                    docker run -d --network=my_network --name movie-db -e POSTGRES_USER=movie_db_username -e POSTGRES_PASSWORD=movie_db_password -e POSTGRES_DB=movie_db_dev postgres:15 || echo "⚠️ Erreur lors du démarrage de movie-db"
-                    docker run -d --network=my_network --name cast-db -e POSTGRES_USER=cast_db_username -e POSTGRES_PASSWORD=cast_db_password -e POSTGRES_DB=cast_db_dev postgres:15 || echo "⚠️ Erreur lors du démarrage de cast-db"
+                    echo "🚀 Démarrage des services avec docker-compose..."
                     
-                    docker run -d --network=my_network -p 80:80 --name nginx nginx:latest || echo "⚠️ Erreur lors du démarrage de nginx"
-
-                    docker run -d --network=my_network -p 32000:8000 --name movie-service $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG || echo "⚠️ Erreur lors du démarrage de movie-service"
-                    docker run -d --network=my_network -p 32010:8000 --name cast-service $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG || echo "⚠️ Erreur lors du démarrage de cast-service"
-
-                   
-                    
+                    docker-compose up -d
+                  
+    
                     echo "📂 Vérification des conteneurs en cours d'exécution..."
                     docker ps -a
 
