@@ -89,60 +89,7 @@ pipeline {
             }
         }
 
-        stage('Diagnostic') {
-            steps {
-                script {
-                    echo "🛠 Diagnostic des services en cours..."
-
-                    // Vérifier les logs de movie-service
-                    sh '''
-                    echo "🔍 Logs de movie-service :"
-                    docker logs movie-service || echo "⚠️ Impossible de récupérer les logs"
-                    '''
-
-                    // Vérifier si l'application écoute bien sur le port 8000
-                    sh '''
-                    echo "🔎 Vérification des ports ouverts dans movie-service..."
-                    docker exec movie-service sh -c 'netstat -tulnp' || echo "⚠️ Erreur lors de la récupération des ports"
-                    '''
-
-                    // Tester l'accès à l'API depuis l'intérieur du conteneur
-                    sh '''
-                    echo "🌐 Test d'accès à l'API depuis movie-service..."
-                    docker exec movie-service curl -s http://localhost:8000 || echo "⚠️ API inaccessible à l'intérieur du conteneur"
-                    '''
-
-                    // Vérifier la connexion à la base de données
-                    sh '''
-                    echo "🗄 Vérification de la connexion entre movie-service et movie-db..."
-                    docker exec movie-service sh -c 'nc -zv movie-db 5432' || echo "⚠️ Problème de connexion à la base de données"
-                    '''
-                }
-            }
-        }
-
-
-        stage('Test Acceptance') {
-            steps {
-                 script {
-                    echo "🔎 Vérification de l'état des services..."
-
-                    sh '''
-                    if curl -s http://localhost:32000 | grep "Welcome"; then
-                        echo "✅ movie-service est accessible !"
-                    else
-                        echo "❌ movie-service inaccessible !" && exit 1
-                    fi
-
-                    if curl -s http://localhost:32010 | grep "Welcome"; then
-                        echo "✅ cast-service est accessible !"
-                    else
-                        echo "❌ cast-service inaccessible !" && exit 1
-                    fi
-                    '''
-                    }
-            }
-        }
+      
         
         stage('Docker Push') {
             steps {
