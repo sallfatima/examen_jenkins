@@ -27,10 +27,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo "🛑 Arrêt des conteneurs existants..."
-                    docker stop $(docker ps -aq)
-                    docker rm $(docker ps -aq )
-                   
+                    
 
               
                     docker ps -a
