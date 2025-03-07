@@ -57,7 +57,7 @@ pipeline {
                 script {
                     sh '''
               
-
+                    docker ps -a
                     echo "🚀 Démarrage des services..."
 
                     docker run -d --network=my_network -p 32000:8000 --name movie-service $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG || echo "⚠️ Erreur lors du démarrage de movie-service"
