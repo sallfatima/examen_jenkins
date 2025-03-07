@@ -18,10 +18,13 @@ pipeline {
         stage('Cleanup Previous Containers') {
             steps {
                 script {
-                    echo "🛑 Arrêt et suppression des anciens conteneurs..."
+                   echo "🛑 Arrêt et suppression des anciens conteneurs..."
                     sh '''
-                    docker stop movie-service cast-service movie-db cast-db nginx 2>/dev/null || true
-                    docker rm movie-service cast-service movie-db cast-db nginx 2>/dev/null || true
+                    docker ps -q --filter "name=movie-service" | xargs -r docker stop | xargs -r docker rm
+                    docker ps -q --filter "name=cast-service" | xargs -r docker stop | xargs -r docker rm
+                    docker ps -q --filter "name=movie-db" | xargs -r docker stop | xargs -r docker rm
+                    docker ps -q --filter "name=cast-db" | xargs -r docker stop | xargs -r docker rm
+                    docker ps -q --filter "name=nginx" | xargs -r docker stop | xargs -r docker rm
                     '''
                 }
             }
@@ -79,18 +82,20 @@ pipeline {
         stage('Test Acceptance') {
             steps {
                  script {
+                    echo "🔎 Vérification de l'état des services..."
+
                     sh '''
-                    echo "⏳ Vérification de l'état des services..."
-                    docker logs cast-service || echo "⚠️ cast-service n'a pas démarré correctement."
-                    docker logs movie-service || echo "⚠️ movie-service n'a pas démarré correctement."
+                    if curl -s http://localhost:32000 | grep "Welcome"; then
+                        echo "✅ movie-service est accessible !"
+                    else
+                        echo "❌ movie-service inaccessible !" && exit 1
+                    fi
 
-
-                    echo "✅ cast-service est accessible !"
-                    curl -v http://cast-service:8000
-
-                
-                    echo "✅ movie-service est accessible !"
-                    curl -v http://movie-service:8000
+                    if curl -s http://localhost:32010 | grep "Welcome"; then
+                        echo "✅ cast-service est accessible !"
+                    else
+                        echo "❌ cast-service inaccessible !" && exit 1
+                    fi
                     '''
                     }
             }
