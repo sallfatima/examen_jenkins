@@ -60,7 +60,7 @@ pipeline {
                  script {
                     sh '''
                     
-                    curl http://host.docker.internal:32010
+                   curl http://cast-service:8000
 
                     
                     '''
