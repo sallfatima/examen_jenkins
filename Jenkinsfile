@@ -75,25 +75,39 @@ pipeline {
             }
         }
 
-        stage('Test Acceptance') {
+
+        stage('Wait for Services to Start') {
             steps {
-                 script {
-                    sh '''
-                    echo "⏳ Vérification de l'état des services..."
-                    docker logs cast-service || echo "⚠️ cast-service n'a pas démarré correctement."
-                    docker logs movie-service || echo "⚠️ movie-service n'a pas démarré correctement."
-
-
-                    echo "✅ cast-service est accessible !"
-                    curl -v http://cast-service:8000
-
-                
-                    echo "✅ movie-service est accessible !"
-                    curl -v http://movie-service:8000
-                    '''
-                    }
+                script {
+                    echo "⏳ Attente du démarrage des services..."
+                    sh "sleep 10"
+                }
             }
         }
+
+        stage('Test Acceptance') {
+            steps {
+                script {
+                    echo "🔎 Vérification de l'état des services..."
+
+                    sh '''
+                    if curl -s http://localhost:32000 | grep "Welcome"; then
+                        echo "✅ movie-service est accessible !"
+                    else
+                        echo "❌ movie-service inaccessible !" && exit 1
+                    fi
+
+                    if curl -s http://localhost:32010 | grep "Welcome"; then
+                        echo "✅ cast-service est accessible !"
+                    else
+                        echo "❌ cast-service inaccessible !" && exit 1
+                    fi
+                    '''
+                }
+            }
+        }
+
+       
         
         stage('Docker Push') {
             steps {
