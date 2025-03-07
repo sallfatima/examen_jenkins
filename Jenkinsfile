@@ -63,21 +63,11 @@ pipeline {
                     docker logs cast-service || echo "⚠️ cast-service n'a pas démarré correctement."
                     docker logs movie-service || echo "⚠️ movie-service n'a pas démarré correctement."
 
-                    echo "⏳ Attente du service cast-service..."
-                    until curl -s http://cast-service:8000 > /dev/null; do
-                        echo "⏳ cast-service n'est pas encore prêt, attente..."
-                        sleep 5
-                    done
 
                     echo "✅ cast-service est accessible !"
                     curl -v http://cast-service:8000
 
-                    echo "⏳ Attente du service movie-service..."
-                    until curl -s http://movie-service:8000 > /dev/null; do
-                        echo "⏳ movie-service n'est pas encore prêt, attente..."
-                        sleep 5
-                    done
-
+                
                     echo "✅ movie-service est accessible !"
                     curl -v http://movie-service:8000
                     '''
