@@ -49,7 +49,7 @@ pipeline {
                  script {
                     sh '''
                     docker ps
-                    curl localhost
+                    curl  http://localhost:8080/api/v1/casts/docs 
                     
                     '''
                     }
