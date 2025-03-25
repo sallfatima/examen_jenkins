@@ -7,7 +7,7 @@ services:
     volumes:
       - ./movie-service/:/app/
     ports:
-      - 32000:8000
+      - 32002:8000
     environment:
       - DATABASE_URI=postgresql://movie_db_username:movie_db_password@movie_db:5432/movie_db_dev
       - CAST_SERVICE_HOST_URL=http://cast_service:8000/api/v1/casts/
@@ -29,7 +29,7 @@ services:
     volumes:
       - ./cast-service/:/app/
     ports:
-      - 32010:8000
+      - 32012:8000
     environment:
       - DATABASE_URI=postgresql://cast_db_username:cast_db_password@cast_db:5432/cast_db_dev
     depends_on:

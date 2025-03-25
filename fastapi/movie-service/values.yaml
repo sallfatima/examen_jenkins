@@ -5,7 +5,7 @@ image:
 
 service:
   type: ClusterIP
-  port: 32000
+  port: 32002
 
 env: 
   DATABASE_URI: "postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev"
