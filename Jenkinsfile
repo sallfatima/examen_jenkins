@@ -28,8 +28,7 @@ pipeline {
                 script {
                     sh '''
                     echo "🛑 Arrêt des conteneurs existants..."
-                    docker ps -aq | xargs -r docker stop || true
-                    docker ps -aq | xargs -r docker rm || true
+                    docker-compose down
 
                     docker ps -a
                     
